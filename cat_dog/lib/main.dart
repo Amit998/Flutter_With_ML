@@ -1,3 +1,4 @@
+import 'package:cat_dog/home.dart';
 import 'package:cat_dog/splashScreen.dart';
 import 'package:flutter/material.dart';
 
