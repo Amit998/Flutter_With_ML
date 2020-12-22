@@ -73,6 +73,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     print(_output);
+    print(_image);
     return Scaffold(
       backgroundColor: Color(0xFF101010),
       body: Container(
