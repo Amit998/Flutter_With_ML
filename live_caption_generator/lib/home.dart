@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -6,6 +9,36 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool _loading = true;
+  File _image;
+  final picker = ImagePicker();
+  String resultText = "Fetching Response...";
+
+  pickImage() async {
+    var image = await picker.getImage(source: ImageSource.camera);
+
+    if (image == null) {
+      return null;
+    }
+    setState(() {
+      _image = File(image.path);
+      _loading = false;
+    });
+    // var 
+  }
+  galleryImage() async {
+    var image = await picker.getImage(source: ImageSource.gallery);
+
+    if (image == null) {
+      return null;
+    }
+    setState(() {
+      _image = File(image.path);
+      _loading = false;
+    });
+    // var 
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

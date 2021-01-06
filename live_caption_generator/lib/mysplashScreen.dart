@@ -21,6 +21,7 @@ class _MySplashState extends State<MySplash> {
             fontSize: 30
             ),
       ),
+      image: Image.asset("assets/notepad.png"),
       gradientBackground:
       LinearGradient(
         begin: Alignment.topCenter,
