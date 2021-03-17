@@ -29,9 +29,10 @@ class _HomeState extends State<Home> {
               ? Center(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        // mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
                             padding: EdgeInsets.all(20.0),
@@ -49,6 +50,7 @@ class _HomeState extends State<Home> {
                                   ]),
                               child: GestureDetector(
                                 onPanDown: (details) {
+                                  print('down');
                                   this.setState(() {
                                     points.add(DrawingArea(
                                         point: details.localPosition,
@@ -60,8 +62,9 @@ class _HomeState extends State<Home> {
                                   });
                                 },
                                 onPanUpdate: (details) {
-                                  this.setState(() {
-                                    points.add(DrawingArea(
+                                  print('update');
+                                  setState(() {
+                                    this.points.add(DrawingArea(
                                         point: details.localPosition,
                                         areaPaint: Paint()
                                           ..strokeCap = StrokeCap.round
@@ -71,7 +74,8 @@ class _HomeState extends State<Home> {
                                   });
                                 },
                                 onPanEnd: (details) {
-                                  this.setState(() {
+                                  print('end');
+                                   this.setState(() {
                                     points.add(null);
                                   });
                                 },
@@ -80,8 +84,7 @@ class _HomeState extends State<Home> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(20.0)),
                                     child: CustomPaint(
-                                      painter: MyCustomPainter(points: points),
-                                    ),
+                                      painter: MyCustomPainter(points: points)),
                                   ),
                                 ),
                               ),

@@ -1,0 +1,17 @@
+Image Classification
+
+add you models and labels into assets folder then add it into pubspec.ymal
+
+add tflite into into pubspec.ymal
+
+for Android 
+In android/app/build.gradle, add the following setting in android block.
+
+    aaptOptions {
+        noCompress 'tflite'
+        noCompress 'lite'
+    } 
+// inside android
+
+
+then add import 'package:tflite/tflite.dart';
