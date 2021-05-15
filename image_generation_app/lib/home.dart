@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_generation_app/drawingarea.dart';
-import 'package:image_generation_app/splashScreen.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:ui' as ui;
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -9,6 +14,68 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<DrawingArea> points = [];
+
+  void saveToImage(List<DrawingArea> points) async {
+    final recorder = ui.PictureRecorder();
+    final canvas =
+        Canvas(recorder, Rect.fromPoints(Offset(0, 0), Offset(200, 200)));
+
+    Paint paint = Paint()
+      ..color = Colors.white
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 2.0;
+
+    final paint2 = Paint()
+      ..style = PaintingStyle.fill
+      ..color = Colors.black;
+
+    canvas.drawRect(Rect.fromLTRB(0, 0, 256, 256), paint2);
+
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null) {
+        canvas.drawLine(points[i].point, points[i + 1].point, paint);
+      }
+    }
+
+    final picture = recorder.endRecording();
+
+    final img = await picture.toImage(256, 256);
+
+    final pngBytes = await img.toByteData(format: ui.ImageByteFormat.png);
+
+    final listBytes = Uint8List.view(pngBytes.buffer);
+
+    // final file= await writBy
+
+    String base64 = base64Encode(listBytes);
+
+    fetchResponse(base64);
+    
+  }
+
+  void fetchResponse(var base64Image) async {
+    var data = {"Image": base64Image};
+    var url = 'http://172.30.64.1:5000/predict';
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Connection': 'Keep-Alive',
+    };
+
+    var body = json.encode(data);
+
+    try {
+      var response =
+          await http.post(Uri.parse(url), body: body, headers: headers);
+
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      String outputBytes = responseData['Image'];
+    } catch (e) {
+      print("Error has occured");
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
