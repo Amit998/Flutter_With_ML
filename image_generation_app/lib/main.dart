@@ -1,8 +1,6 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:image_generation_app/home.dart';
 import 'package:image_generation_app/splashScreen.dart';
-import 'package:splashscreen/splashscreen.dart';
 
 void main() {
   runApp(MyApp());

@@ -13,9 +13,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Widget imageOutput;
+
   List<DrawingArea> points = [];
 
   void saveToImage(List<DrawingArea> points) async {
+    print("Save To Image");
+
     final recorder = ui.PictureRecorder();
     final canvas =
         Canvas(recorder, Rect.fromPoints(Offset(0, 0), Offset(200, 200)));
@@ -49,18 +53,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
     String base64 = base64Encode(listBytes);
 
+    print("Save As Image");
+
     fetchResponse(base64);
-    
   }
 
   void fetchResponse(var base64Image) async {
+    print("Fetching Request");
+
     var data = {"Image": base64Image};
-    var url = 'http://172.30.64.1:5000/predict';
+    var url = 'http://172.18.240.1:5000/predict';
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
       'Connection': 'Keep-Alive',
     };
+
+    print(headers);
 
     var body = json.encode(data);
 
@@ -68,13 +77,33 @@ class _MyHomePageState extends State<MyHomePage> {
       var response =
           await http.post(Uri.parse(url), body: body, headers: headers);
 
+      print(response.statusCode);
+
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       String outputBytes = responseData['Image'];
+
+      // print("${outputBytes.substring(2, outputBytes.length - 1)}");
+      displayResponseImage(outputBytes.substring(2, outputBytes.length - 1));
     } catch (e) {
       print("Error has occured");
       return null;
     }
+  }
+
+  void displayResponseImage(String bytes) async {
+    Uint8List convertedBytes = base64Decode(bytes);
+
+    setState(() {
+      imageOutput = Container(
+        width: 256,
+        height: 256,
+        child: Image.memory(
+          convertedBytes,
+          fit: BoxFit.cover,
+        ),
+      );
+    });
   }
 
   @override
@@ -138,6 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                       },
                       onPanEnd: (details) {
+                        saveToImage(points);
                         setState(() {
                           points.add(null);
                         });
@@ -173,6 +203,20 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: Colors.black,
                           ))
                     ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Container(
+                    child: Center(
+                      child: Container(
+                        height: 256,
+                        width: 256,
+                        child: imageOutput,
+
+                        // child: imageOutput != null ? imageOutput : Container(),
+                      ),
+                    ),
                   ),
                 )
               ],
