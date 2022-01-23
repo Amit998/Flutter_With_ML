@@ -1,0 +1,8 @@
+black_widow
+captain_america
+doctor_strange
+hulk
+loki
+ironman
+spiderman
+thanos
